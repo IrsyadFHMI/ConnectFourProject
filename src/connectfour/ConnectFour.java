@@ -7,7 +7,7 @@ import javax.swing.*;
 /**
  * Connect Four: Two-player Graphic version with minimal changes from Tic-Tac-Toe.
  */
-public class TicTacToe extends JPanel {
+public class ConnectFour extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public static final int ROWS = 6;   // 6 rows for Connect Four
@@ -24,7 +24,7 @@ public class TicTacToe extends JPanel {
     private Seed currentPlayer;
     private JLabel statusBar;
 
-    public TicTacToe() {
+    public ConnectFour() {
         super.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -32,6 +32,7 @@ public class TicTacToe extends JPanel {
                 int colSelected = mouseX / Cell.SIZE;
 
                 if (currentState == State.PLAYING) {
+                    SoundEffect.Playing.play();
                     if (colSelected >= 0 && colSelected < COLS) {
                         for (int row = ROWS - 1; row >= 0; row--) {
                             if (board.cells[row][colSelected].content == Seed.NO_SEED) {
@@ -43,7 +44,8 @@ public class TicTacToe extends JPanel {
                         }
                     }
                 } else {
-                    newGame();
+                    SoundEffect.DIE.play();// game over
+                    newGame();//restart
                 }
                 repaint();
             }
@@ -105,7 +107,7 @@ public class TicTacToe extends JPanel {
     public void play() {
         javax.swing.SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame(TITLE);
-            frame.setContentPane(new TicTacToe());
+            frame.setContentPane(new ConnectFour());
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.pack();
             frame.setLocationRelativeTo(null);
