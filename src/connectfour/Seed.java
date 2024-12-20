@@ -1,3 +1,11 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #7
+ * 1 - 5026221163 - Mohammad Geresidi Rachmadi
+ * 2 - 5026221187 - Muhammad Irsyad Fahmi
+ */
 package connectfour;
 
 import java.awt.Image;
@@ -17,8 +25,8 @@ import javax.swing.ImageIcon;
  *  however, not supported.
  */
 public enum Seed {   // to save as "Seed.java"
-    CROSS("X", "angryEmoji.gif"),   // displayName, imageFilename
-    NOUGHT("O", "smileEmoji.gif"),
+    RED("Red", "AngryEmote.png"),   // displayName, imageFilename
+    YELLOW("Yellow", "SmileEmote2.png"),
     NO_SEED(" ", null);
 
     // Private variables

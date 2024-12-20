@@ -1,3 +1,11 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #7
+ * 1 - 5026221163 - Mohammad Geresidi Rachmadi
+ * 2 - 5026221187 - Muhammad Irsyad Fahmi
+ */
 package connectfour;
 
 import java.awt.*;
@@ -15,8 +23,8 @@ public class ConnectFour extends JPanel {
     public static final String TITLE = "Connect Four";
     public static final Color COLOR_BG = Color.WHITE;
     public static final Color COLOR_BG_STATUS = new Color(216, 216, 216);
-    public static final Color COLOR_CROSS = new Color(239, 105, 80);  // Red #EF6950
-    public static final Color COLOR_NOUGHT = new Color(64, 154, 225); // Blue #409AE1
+    public static final Color COLOR_RED = new Color(239, 105, 80);  // Red #EF6950
+    public static final Color COLOR_YELLOW = new Color(64, 154, 225); // Yellow #409AE1
     public static final Font FONT_STATUS = new Font("OCR A Extended", Font.PLAIN, 14);
 
     private Board board;
@@ -25,11 +33,12 @@ public class ConnectFour extends JPanel {
     private JLabel statusBar;
 
     public ConnectFour() {
+
         super.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int mouseX = e.getX();
-                int colSelected = mouseX / Cell.SIZE;
+                int colSelected = mouseX / (getWidth() / COLS);
 
                 if (currentState == State.PLAYING) {
                     SoundEffect.Playing.play();
@@ -38,14 +47,14 @@ public class ConnectFour extends JPanel {
                             if (board.cells[row][colSelected].content == Seed.NO_SEED) {
                                 board.cells[row][colSelected].content = currentPlayer;
                                 currentState = board.stepGame(currentPlayer, row, colSelected);
-                                currentPlayer = (currentPlayer == Seed.CROSS) ? Seed.NOUGHT : Seed.CROSS;
+                                currentPlayer = (currentPlayer == Seed.RED) ? Seed.YELLOW : Seed.RED;
                                 break;
                             }
                         }
                     }
                 } else {
-                    SoundEffect.DIE.play();// game over
-                    newGame();//restart
+                    SoundEffect.DIE.play();  // game over
+                    newGame();  // restart
                 }
                 repaint();
             }
@@ -61,11 +70,20 @@ public class ConnectFour extends JPanel {
 
         super.setLayout(new BorderLayout());
         super.add(statusBar, BorderLayout.PAGE_END);
-        super.setPreferredSize(new Dimension(Board.CANVAS_WIDTH, Board.CANVAS_HEIGHT + 30));
+        super.setPreferredSize(new Dimension(800, 600));  // Default size; it will resize dynamically
         super.setBorder(BorderFactory.createLineBorder(COLOR_BG_STATUS, 2, false));
 
         initGame();
         newGame();
+
+        // Add ComponentListener to handle resizing of the window
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                // Repaint the board when the window is resized
+                repaint();
+            }
+        });
     }
 
     public void initGame() {
@@ -78,7 +96,7 @@ public class ConnectFour extends JPanel {
                 board.cells[row][col].content = Seed.NO_SEED;
             }
         }
-        currentPlayer = Seed.CROSS;
+        currentPlayer = Seed.RED;
         currentState = State.PLAYING;
     }
 
@@ -87,20 +105,26 @@ public class ConnectFour extends JPanel {
         super.paintComponent(g);
         setBackground(COLOR_BG);
 
-        board.paint(g);
+        // Calculate canvas width and height dynamically
+        int canvasWidth = getWidth();
+        int canvasHeight = getHeight() - statusBar.getHeight();  // Exclude the status bar height
 
+        // Paint the board
+        board.paint(g, canvasWidth, canvasHeight);
+
+        // Display the current game state in the status bar
         if (currentState == State.PLAYING) {
             statusBar.setForeground(Color.BLACK);
-            statusBar.setText((currentPlayer == Seed.CROSS) ? "X's Turn" : "O's Turn");
+            statusBar.setText((currentPlayer == Seed.RED) ? "Red's Turn" : "Yellow's Turn");
         } else if (currentState == State.DRAW) {
             statusBar.setForeground(Color.RED);
             statusBar.setText("It's a Draw! Click to play again.");
-        } else if (currentState == State.CROSS_WON) {
+        } else if (currentState == State.RED_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'X' Won! Click to play again.");
-        } else if (currentState == State.NOUGHT_WON) {
+            statusBar.setText("'Red' Won! Click to play again.");
+        } else if (currentState == State.YELLOW_WON) {
             statusBar.setForeground(Color.RED);
-            statusBar.setText("'O' Won! Click to play again.");
+            statusBar.setText("'Yellow' Won! Click to play again.");
         }
     }
 
@@ -114,5 +138,4 @@ public class ConnectFour extends JPanel {
             frame.setVisible(true);
         });
     }
-
 }
